@@ -26,6 +26,7 @@ interface HelpOptions {
 
 export class Commander {
     public readonly onMessage = new Event<Commander, string>('Commander.onMessage');
+    public readonly onExecuted = new Event<any, string>('Commander.onExecuted');
 
     public readonly description: string;
 
@@ -154,6 +155,7 @@ export class Commander {
         stopwatch.stop();
 
         this.onMessage.emit(this, `executed '${commandLine}' in ${formatDuration(stopwatch.duration, { seconds: true, milliseconds: true })}`);
+        this.onExecuted.emit(result, commandLine);
 
         return result;
     }
