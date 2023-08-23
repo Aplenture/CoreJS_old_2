@@ -146,7 +146,7 @@ export function parseArgsFromString(value: string): NodeJS.Dict<string | readonl
     return result;
 }
 
-export function parseArgsToString(args: NodeJS.ReadOnlyDict<any>): string {
+export function parseArgsToString(args: NodeJS.ReadOnlyDict<any> = {}): string {
     return Object.keys(args)
         .filter(key => undefined !== args[key])
         .map(key => `--${key} ${args[key]}`)
