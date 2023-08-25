@@ -8,6 +8,7 @@
 export * from "./args";
 export * from "./bigMath";
 export * from "./fs";
+export * from "./hexSerialization";
 export * from "./serialization";
 export * from "./sleep";
 export * from "./text";
