@@ -69,7 +69,7 @@ export class Commander {
             delete this._commands[key];
     }
 
-    public execute(command?: string, args?: any, parseArgs?: boolean) {
+    public execute(command?: string, args?: any) {
         if (!command)
             command = COMMAND_NAME_HELP;
 
@@ -78,10 +78,10 @@ export class Commander {
             ? `${command} ${params}`
             : command;
 
-        return this.executeCommand(commandLine, command, args, parseArgs);
+        return this.executeCommand(commandLine, command, args);
     }
 
-    public executeLine(commandLine?: string, parseArgs?: boolean) {
+    public executeLine(commandLine?: string) {
         if (!commandLine)
             commandLine = COMMAND_NAME_HELP;
 
@@ -89,7 +89,7 @@ export class Commander {
         const command = split[0];
         const args = parseArgsFromString(commandLine.substring(command.length));
 
-        return this.executeCommand(commandLine, command, args, parseArgs);
+        return this.executeCommand(commandLine, command, args);
     }
 
     public help(prefix = '', options: HelpOptions = {}): string {
@@ -128,29 +128,22 @@ export class Commander {
         return result;
     }
 
-    public parseArgs(command: string, args?: NodeJS.ReadOnlyDict<any>, instance = this._commands[command.toLowerCase()] || this._fallbackCommand): NodeJS.Dict<any> {
-        const result: NodeJS.Dict<any> = instance.parameters
-            ? instance.parameters.parse(args)
-            : {};
-
-        // manipulate args by global args
-        this.config.write(result);
-
-        return result;
-    }
-
-    private async executeCommand(commandLine: string, command: string, args?: NodeJS.ReadOnlyDict<any>, parseArgs = true): Promise<any> {
+    private async executeCommand(commandLine: string, command: string, args: NodeJS.Dict<any> = {}): Promise<any> {
         command = command.toLowerCase();
 
         const stopwatch = new Stopwatch();
         const instance = this._commands[command] || this._fallbackCommand;
-        const parsedArgs = parseArgs
-            ? this.parseArgs(command, args, instance)
-            : args;
+
+        // manipulate args by command parameters
+        if (instance.parameters)
+            instance.parameters.parse(args);
+
+        // manipulate args by global args
+        this.config.write(args);
 
         stopwatch.start();
 
-        const result = await instance.execute(parsedArgs);
+        const result = await instance.execute(args);
 
         stopwatch.stop();
 

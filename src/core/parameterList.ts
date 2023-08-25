@@ -40,11 +40,9 @@ export class ParameterList {
         return true;
     }
 
-    public parse<T extends NodeJS.Dict<any>>(data: NodeJS.ReadOnlyDict<any> = {}): T {
-        const result = {};
+    public parse(data: NodeJS.Dict<any> = {}): NodeJS.Dict<any> {
+        Object.values(this._parameters).forEach(param => data[param.name] = param.parse(data[param.name]));
 
-        Object.values(this._parameters).forEach(param => result[param.name] = param.parse(data[param.name]));
-
-        return result as T;
+        return data;
     }
 }

@@ -175,20 +175,20 @@ export function generateColor(text: string): string {
     ).toString(16).toUpperCase();
 }
 
-export function URLParamsToString(params: NodeJS.Dict<any> = {}): string {
-    if (!params)
+export function URLArgsToString(args: NodeJS.Dict<any> = {}): string {
+    if (!args)
         return '';
 
-    const args = [];
+    const array = [];
 
-    for (const key in params) {
-        if (typeof params[key] == 'boolean')
-            args.push(`${key}=${params[key] ? 1 : 0}`);
-        else if (Array.isArray(params[key]))
-            (params[key] as any).forEach(value => args.push(`${key}=${encodeString(value)}`));
+    for (const key in args) {
+        if (typeof args[key] == 'boolean')
+            array.push(`${key}=${args[key] ? 1 : 0}`);
+        else if (Array.isArray(args[key]))
+            (args[key] as any).forEach(value => array.push(`${key}=${encodeString(value)}`));
         else
-            args.push(`${key}=${encodeString(params[key] as any)}`)
+            array.push(`${key}=${encodeString(args[key] as any)}`)
     }
 
-    return args.join('&');
+    return array.join('&');
 }
