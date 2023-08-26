@@ -16,6 +16,12 @@ export class Config extends ParameterList {
 
     private readonly _data: NodeJS.Dict<any> = {};
 
+    constructor(...parameters: Parameter<any>[]) {
+        super();
+
+        parameters.forEach(param => this.add(param));
+    }
+
     protected get data(): NodeJS.ReadOnlyDict<Parameter<any>> { return this._data; };
 
     public get description(): string {
