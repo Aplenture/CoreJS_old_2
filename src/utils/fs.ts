@@ -21,12 +21,11 @@ const _require: (path: string) => any = (function () {
     }
 })();
 
-const readFileSync: (path: string, encoding?: string) => string = (function () {
-    try {
-        return eval("require('fs').readFileSync");
-    } catch (error) {
+const fs = (function () {
+    if (!_require)
         return null;
-    }
+
+    return _require('fs');
 })();
 
 export interface LoadModuleConfig {
@@ -54,12 +53,19 @@ export const loadModule = (function () {
 })();
 
 export const loadConfig = (function () {
-    if (!readFileSync)
+    if (!fs)
         return function () { throw new Error('method not supported'); }
 
-    return function loadConfig<T>(name = 'config.json'): T {
+    return function loadConfig(name = 'config.json', _default = {}) {
         const path = `${cwd}/${name}`;
-        const content = readFileSync(path, 'utf8');
+
+        if (!fs.existsSync(path))
+            if (_default)
+                return _default;
+            else
+                throw new Error(`missing config at path '${path}'`);
+
+        const content = fs.readFileSync(path, 'utf8');
 
         return JSON.parse(content);
     }
