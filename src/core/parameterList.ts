@@ -23,7 +23,7 @@ export class ParameterList {
             return '';
 
         return params
-            .map(param => `${param.name}${param.optional ? ' (optional)' : ''} - ${param.description || ''}`)
+            .map(param => `${param.name} (${param.type}${param.optional ? ', optional' : ''}) - ${param.description || ''}`)
             .join('\n') + '\n';
     }
 
