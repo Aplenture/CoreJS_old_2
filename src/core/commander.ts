@@ -52,6 +52,8 @@ export class Commander {
         }
     }
 
+    public get commands(): NodeJS.ReadOnlyDict<Command<any>> { return this._commands; }
+
     public has(command: string): boolean {
         return !!this._commands[command.toLowerCase()];
     }
