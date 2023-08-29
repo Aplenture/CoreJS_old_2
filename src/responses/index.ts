@@ -7,6 +7,7 @@
 
 export * from "./boolResponse";
 export * from "./errorResponse";
+export * from "./htmlResponse";
 export * from "./jsonResponse";
 export * from "./noContentResponse";
 export * from "./numberResponse";

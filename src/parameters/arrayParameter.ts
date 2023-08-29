@@ -8,7 +8,7 @@
 import { Parameter } from "../core/parameter";
 
 export class ArrayParameter<T> extends Parameter<T[]>{
-    public readonly type = 'array';
+    public readonly type = this.parameter.type + ' array';
 
     constructor(
         name: string,

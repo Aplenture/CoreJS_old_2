@@ -24,17 +24,6 @@ export class Config extends ParameterList {
 
     protected get data(): NodeJS.ReadOnlyDict<Parameter<any>> { return this._data; };
 
-    public get description(): string {
-        const params = Object.values(this.parameters);
-
-        if (0 == params.length)
-            return '';
-
-        return params
-            .map(param => `${param.name}${param.optional ? ' (optional)' : ''} - ${param.description || ''}`)
-            .join('\n') + '\n';
-    }
-
     public get<T>(key: string): T {
         if (!this.has(key))
             throw new Error(`unknown parameter '${key}'`);
@@ -84,8 +73,8 @@ export class Config extends ParameterList {
         return data;
     }
 
-    public serialize(type = SerializationType.JSON, options?: SerializationOptions): string {
-        return serialize(this._data, type, options);
+    public serialize(options?: SerializationOptions): string {
+        return serialize(this._data, options);
     }
 
     public deserialize(data: any) {
@@ -94,9 +83,5 @@ export class Config extends ParameterList {
         for (const key in deserializedData)
             if (this.has(key))
                 this.set(key, deserializedData[key]);
-    }
-
-    public toString(): string {
-        return JSON.stringify(this._data);
     }
 }

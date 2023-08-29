@@ -6,6 +6,7 @@
  */
 
 import { CoreErrorCode } from "../enums";
+import { SerializationOptions, serialize } from "../utils";
 import { CoreError } from "./coreError";
 
 export abstract class Parameter<T> {
@@ -32,5 +33,18 @@ export abstract class Parameter<T> {
                 throw new CoreError(CoreErrorCode.MissingParameter, { name: this.name, type: this.type });
 
         return result;
+    }
+
+    public serialize(options?: SerializationOptions): string {
+        return serialize({
+            name: this.name,
+            description: this.description,
+            optional: this.optional,
+            default: this.def
+        }, options);
+    }
+
+    public toString(): string {
+        return `${this.name} (${this.type}${this.optional ? ', optional' : ''}) - ${this.description || ''}`;
     }
 }

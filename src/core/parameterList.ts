@@ -5,6 +5,7 @@
  * MIT License https://github.com/Aplenture/CoreJS/blob/main/LICENSE
  */
 
+import { SerializationOptions, serialize } from "../utils";
 import { Parameter } from "./parameter";
 
 export class ParameterList {
@@ -15,17 +16,6 @@ export class ParameterList {
     }
 
     protected get parameters(): NodeJS.ReadOnlyDict<Parameter<any>> { return this._parameters; };
-
-    public get description(): string {
-        const params = Object.values(this._parameters);
-
-        if (0 == params.length)
-            return '';
-
-        return params
-            .map(param => `${param.name} (${param.type}${param.optional ? ', optional' : ''}) - ${param.description || ''}`)
-            .join('\n') + '\n';
-    }
 
     public has(parameter: string): boolean {
         return !!this.parameters[parameter];
@@ -44,5 +34,13 @@ export class ParameterList {
         Object.values(this._parameters).forEach(param => data[param.name] = param.parse(data[param.name]));
 
         return data;
+    }
+
+    public serialize(options?: SerializationOptions): string {
+        return serialize(this._parameters, options);
+    }
+
+    public toString(): string {
+        return Object.values(this._parameters).join('\n') + '\n';
     }
 }

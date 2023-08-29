@@ -6,7 +6,7 @@
  */
 
 import { StringParameter } from "../parameters";
-import { formatDuration, parseArgsFromString, parseArgsToString } from "../utils";
+import { SerializationOptions, formatDuration, parseArgsFromString, parseArgsToString, serialize } from "../utils";
 import { Command, CommandAction } from "./command";
 import { Config } from "./config";
 import { Event } from "./event";
@@ -20,7 +20,8 @@ interface Options {
     readonly fallback?: CommandAction<any>;
 }
 
-interface HelpOptions {
+interface ToStringOptions {
+    readonly prefix?: string;
     readonly globalParameters?: boolean;
 }
 
@@ -43,7 +44,7 @@ export class Commander {
         if (!options.fallback) {
             this.set({
                 name: COMMAND_NAME_HELP,
-                execute: async args => this.help(args.command && args.command.toString()),
+                execute: async args => this.toString(args.command && args.command.toString()),
                 description: 'Lists all commands or returns details of specific <command>.',
                 parameters: new ParameterList(
                     new StringParameter('command', 'Lists all commands with this prefix or returns details of specific command.', '')
@@ -94,42 +95,6 @@ export class Commander {
         return this.executeCommand(commandLine, command, args);
     }
 
-    public help(prefix = '', options: HelpOptions = {}): string {
-        prefix = prefix.toLowerCase();
-
-        const commandNames = Object.keys(this._commands).filter(command => !prefix || 0 == command.indexOf(prefix));
-        const commands = commandNames.map(name => this._commands[name]);
-
-        let result = "";
-
-        if (1 < commands.length && this.description)
-            result += this.description + '\n\n';
-
-        if (options.globalParameters) {
-            const description = this.config.description;
-
-            if (description)
-                result += 'Global parameters:\n' + description;
-        }
-
-        if (0 < commands.length)
-            result += 'Command(s):\n' + commandNames
-                .map((name, index) => `${name} - ${commands[index].description || ''}`)
-                .join('\n') + '\n';
-
-        if (1 == commands.length && commands[0].parameters) {
-            const description = commands[0].parameters.description;
-
-            if (description)
-                result += '\nCommand parameters:\n' + description;
-        }
-
-        if (0 == commands.length)
-            result += 'No commands found!\n';
-
-        return result;
-    }
-
     private async executeCommand(commandLine: string, command: string, args: NodeJS.Dict<any> = {}): Promise<any> {
         command = command.toLowerCase();
 
@@ -151,6 +116,53 @@ export class Commander {
 
         this.onMessage.emit(this, `executed '${commandLine}' in ${formatDuration(stopwatch.duration, { seconds: true, milliseconds: true })}`);
         this.onExecuted.emit(result, commandLine);
+
+        return result;
+    }
+
+    public serialize(options?: SerializationOptions) {
+        return serialize({
+            description: this.description,
+            config: this.config,
+            commands: Object.values(this.commands).map(command => ({
+                name: command.name,
+                description: command.description,
+                parameters: command.parameters
+            }))
+        }, options);
+    }
+
+    public toString(options: ToStringOptions = {}): string {
+        const prefix = (options.prefix || '').toLowerCase();
+        const commandNames = Object.keys(this._commands).filter(command => 0 == command.indexOf(prefix));
+        const commands = commandNames.map(name => this._commands[name]);
+
+        let result = "";
+
+        if (1 < commands.length && this.description)
+            result += this.description + '\n\n';
+
+        if (options.globalParameters) {
+            const description = this.config.toString();
+
+            if (description)
+                result += 'Global parameters:\n' + description;
+        }
+
+        if (0 < commands.length)
+            result += 'Command(s):\n' + commandNames
+                .map((name, index) => `${name} - ${commands[index].description || ''}`)
+                .join('\n') + '\n';
+
+        if (1 == commands.length && commands[0].parameters) {
+            const description = commands[0].parameters.toString();
+
+            if (description)
+                result += '\nCommand parameters:\n' + description;
+        }
+
+        if (0 == commands.length)
+            result += 'No commands found!\n';
 
         return result;
     }

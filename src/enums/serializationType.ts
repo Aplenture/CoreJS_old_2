@@ -7,5 +7,6 @@
 
 export enum SerializationType {
     Args = 'args',
-    JSON = 'json'
+    JSON = 'json',
+    HTML = 'html'
 }
