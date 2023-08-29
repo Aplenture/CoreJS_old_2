@@ -21,7 +21,7 @@ interface CurrencyOptions {
 }
 
 export function parseToTime(value: any): number {
-    if (undefined === value)
+    if (undefined == value)
         return;
 
     if (!isNaN(Number(value)))
@@ -36,14 +36,14 @@ export function parseToTime(value: any): number {
 }
 
 export function parseToString(value: any): string {
-    if (undefined === value)
+    if (undefined == value)
         return;
 
     return value.toString();
 }
 
 export function parseToNumber(value: any): number {
-    if (undefined === value)
+    if (undefined == value)
         return;
 
     const result = Number(value);
@@ -55,7 +55,7 @@ export function parseToNumber(value: any): number {
 }
 
 export function parseToBool(value: any): boolean {
-    if (undefined === value)
+    if (undefined == value)
         return;
 
     const lowercase = value
