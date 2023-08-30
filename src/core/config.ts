@@ -5,8 +5,6 @@
  * MIT License https://github.com/Aplenture/CoreJS/blob/main/LICENSE
  */
 
-import { SerializationType } from "../enums";
-import { SerializationOptions, deserialize, serialize } from "../utils";
 import { Event, EventHandler } from "./event";
 import { Parameter } from "./parameter";
 import { ParameterList } from "./parameterList";
@@ -22,7 +20,7 @@ export class Config extends ParameterList {
         parameters.forEach(param => this.add(param));
     }
 
-    protected get data(): NodeJS.ReadOnlyDict<Parameter<any>> { return this._data; };
+    protected get data(): NodeJS.ReadOnlyDict<any> { return this._data; };
 
     public get<T>(key: string): T {
         if (!this.has(key))
@@ -73,15 +71,20 @@ export class Config extends ParameterList {
         return data;
     }
 
-    public serialize(options?: SerializationOptions): string {
-        return serialize(this._data, options);
+    public deserialize(data: any) {
+        if (typeof data == 'string')
+            this.deserialize(JSON.parse(data));
+
+        for (const key in data)
+            if (this.has(key))
+                this.set(key, data[key]);
     }
 
-    public deserialize(data: any) {
-        const deserializedData = deserialize(data);
+    public toString() {
+        return Object.keys(this._data).map(key => `${key} - ${JSON.stringify(this._data[key])}`).join('\n');
+    }
 
-        for (const key in deserializedData)
-            if (this.has(key))
-                this.set(key, deserializedData[key]);
+    public toJSON() {
+        return this.data;
     }
 }

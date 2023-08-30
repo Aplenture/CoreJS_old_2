@@ -5,9 +5,8 @@
  * MIT License https://github.com/Aplenture/CoreJS/blob/main/LICENSE
  */
 
-export * from "./bigMath";
-export * from "./hexSerialization";
-export * from "./serialization";
+export * as BigMath from "./bigMath";
+export * as Serialization from "./serialization";
 export * from "./sleep";
 export * from "./text";
 export * from "./time";

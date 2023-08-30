@@ -6,7 +6,6 @@
  */
 
 import { CoreErrorCode } from "../enums";
-import { SerializationOptions, serialize } from "../utils";
 import { CoreError } from "./coreError";
 
 export abstract class Parameter<T> {
@@ -35,16 +34,17 @@ export abstract class Parameter<T> {
         return result;
     }
 
-    public serialize(options?: SerializationOptions): string {
-        return serialize({
+    public toString() {
+        return `${this.name} (${this.type}${this.optional ? ', optional' : ''}) - ${this.description || ''}`;
+    }
+
+    public toJSON() {
+        return {
             name: this.name,
+            type: this.type,
             description: this.description,
             optional: this.optional,
             default: this.def
-        }, options);
-    }
-
-    public toString(): string {
-        return `${this.name} (${this.type}${this.optional ? ', optional' : ''}) - ${this.description || ''}`;
+        };
     }
 }
