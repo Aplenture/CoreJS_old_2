@@ -16,7 +16,7 @@ export function fromHex(value: string): string[] {
     for (let i = 0, j = byteLength, length; i < count; ++i, j += byteLength + length) {
         length = parseInt(value.slice(j, j + byteLength), 16);
 
-        result[i] = value.slice(byteLength, length + byteLength);
+        result[i] = value.slice(j + byteLength, j + length + byteLength);
     }
 
     return result;
@@ -26,7 +26,7 @@ export function toHex(data: readonly string[]): string {
     const byteLength = 2;
     const count = data.length;
 
-    let result = BigMath.toHex(this.api.length, byteLength);
+    let result = BigMath.toHex(count, byteLength);
 
     for (let i = 0; i < count; ++i) {
         result += BigMath.toHex(undefined == data[i] ? '' : data[i].length, byteLength);
