@@ -15,3 +15,4 @@ export * from "./parameter";
 export * from "./parameterList";
 export * from "./response";
 export * from "./stopwatch";
+export * from "./task";
