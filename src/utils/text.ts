@@ -88,7 +88,10 @@ export function parseToJSON<T>(data: string, def?: T): T {
     try {
         return JSON.parse(data) as T;
     } catch (e) {
-        return def;
+        if (undefined !== def)
+            return def;
+        else
+            throw new Error(`data has invalid json format`);
     }
 }
 
