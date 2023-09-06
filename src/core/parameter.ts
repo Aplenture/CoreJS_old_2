@@ -22,13 +22,13 @@ export abstract class Parameter<T> {
         this.optional = undefined !== def;
     }
 
-    public parse(data: any): T {
+    public parse(data: any, ignoreMissingParameter = false): T {
         const result = this.parser(data);
 
         if (undefined == result)
             if (this.optional)
                 return this.def;
-            else
+            else if (!ignoreMissingParameter)
                 throw new CoreError(CoreErrorCode.MissingParameter, { name: this.name, type: this.type });
 
         return result;

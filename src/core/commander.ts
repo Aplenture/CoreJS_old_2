@@ -103,7 +103,7 @@ export class Commander {
 
         // manipulate args by command parameters
         if (instance.parameters)
-            instance.parameters.parse(args);
+            instance.parameters.parse(args, args);
 
         // manipulate args by global args
         this.config.write(args);

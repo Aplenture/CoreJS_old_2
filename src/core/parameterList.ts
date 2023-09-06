@@ -29,10 +29,10 @@ export class ParameterList {
         return true;
     }
 
-    public parse(data: NodeJS.Dict<any> = {}): NodeJS.Dict<any> {
-        Object.values(this._parameters).forEach(param => data[param.name] = param.parse(data[param.name]));
+    public parse(input: NodeJS.ReadOnlyDict<any> = {}, output: NodeJS.Dict<any> = {}, ignoreMissingParameter?: boolean): NodeJS.Dict<any> {
+        Object.values(this._parameters).forEach(param => output[param.name] = param.parse(input[param.name], ignoreMissingParameter));
 
-        return data;
+        return output;
     }
 
     public toString() {
