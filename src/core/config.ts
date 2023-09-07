@@ -73,7 +73,7 @@ export class Config extends ParameterList {
 
     public deserialize(data: any) {
         if (typeof data == 'string')
-            this.deserialize(JSON.parse(data));
+            return this.deserialize(JSON.parse(data));
 
         for (const key in data)
             if (this.has(key))
