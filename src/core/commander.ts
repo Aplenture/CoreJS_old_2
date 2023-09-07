@@ -5,25 +5,20 @@
  * MIT License https://github.com/Aplenture/CoreJS/blob/main/LICENSE
  */
 
-import { NumberParameter, StringParameter } from "../parameters";
+import { StringParameter } from "../parameters";
 import { formatDuration, parseArgsFromString, parseArgsToString } from "../utils";
 import { Command, CommandAction } from "./command";
 import { Config } from "./config";
 import { Event } from "./event";
-import { Parameter } from "./parameter";
 import { ParameterList } from "./parameterList";
 import { Stopwatch } from "./stopwatch";
 
 const COMMAND_HELP = 'help';
-const COMMAND_CONFIG_GET = 'config.get';
-const COMMAND_CONFIG_SET = 'config.set';
-const COMMAND_CONFIG_SERIALIZE = 'config.serialize';
 
 interface Options {
-    readonly config?: Config;
     readonly description?: string;
+    readonly config?: Config;
     readonly fallback?: CommandAction<any>;
-    readonly addConfigCommands?: boolean;
 }
 
 interface ToStringOptions {
@@ -35,15 +30,15 @@ export class Commander {
     public readonly onMessage = new Event<Commander, string>('Commander.onMessage');
     public readonly onExecuted = new Event<any, string>('Commander.onExecuted');
 
-    public readonly config: Config;
     public readonly description: string;
+    public readonly config: Config;
 
     private readonly _commands: NodeJS.Dict<Command<any>> = {};
     private readonly _fallbackCommand: Command<any>;
 
     constructor(options: Options = {}) {
-        this.config = options.config || new Config();
         this.description = options.description || "";
+        this.config = options.config || new Config();
         this._fallbackCommand = {
             name: '',
             execute: options.fallback || (async () => `Unknown command. Type '${COMMAND_HELP}' to list all known commands.\n`)
@@ -57,40 +52,6 @@ export class Commander {
                 parameters: new ParameterList(
                     new StringParameter('command', 'Lists all commands with this prefix or returns details of specific command.', '')
                 )
-            });
-        }
-
-        if (options.addConfigCommands || undefined == options.addConfigCommands) {
-            this.set({
-                name: COMMAND_CONFIG_GET,
-                execute: async args => this.config.get(args.key),
-                description: 'returns a config parameter value',
-                parameters: new ParameterList(
-                    new StringParameter('key', 'config parameter name')
-                )
-            });
-
-            this.set({
-                name: COMMAND_CONFIG_SET,
-                description: 'sets a config parameter value',
-                parameters: new ParameterList(
-                    new StringParameter('key', 'Config parameter name.'),
-                    new Parameter('value', 'Config parameter value.')
-                ),
-                execute: async args => {
-                    this.config.set(args.key, args.value);
-
-                    return `${args.key} set to '${this.config.get(args.key)}'`;
-                }
-            });
-
-            this.set({
-                name: COMMAND_CONFIG_SERIALIZE,
-                description: "returns the serialized config",
-                parameters: new ParameterList(
-                    new NumberParameter('space', 'serialization option space', 4)
-                ),
-                execute: async args => JSON.stringify(this.config, null, args.space)
             });
         }
     }
@@ -200,11 +161,11 @@ export class Commander {
     public toJSON() {
         return {
             description: this.description,
-            config: this.config,
+            parameters: this.config.toJSON(),
             commands: Object.values(this.commands).map(command => ({
                 name: command.name,
                 description: command.description,
-                parameters: command.parameters
+                parameters: command.parameters.toJSON()
             }))
         };
     }
