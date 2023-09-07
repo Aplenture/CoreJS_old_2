@@ -16,6 +16,7 @@ import { Stopwatch } from "./stopwatch";
 const COMMAND_NAME_HELP = 'help';
 
 interface Options {
+    readonly config?: Config;
     readonly description?: string;
     readonly fallback?: CommandAction<any>;
 }
@@ -29,12 +30,14 @@ export class Commander {
     public readonly onMessage = new Event<Commander, string>('Commander.onMessage');
     public readonly onExecuted = new Event<any, string>('Commander.onExecuted');
 
+    public readonly config: Config;
     public readonly description: string;
 
     private readonly _commands: NodeJS.Dict<Command<any>> = {};
     private readonly _fallbackCommand: Command<any>;
 
-    constructor(public readonly config = new Config(), options: Options = {}) {
+    constructor(options: Options = {}) {
+        this.config = options.config || new Config();
         this.description = options.description || "";
         this._fallbackCommand = {
             name: '',
