@@ -8,16 +8,15 @@
 import { CoreErrorCode } from "../enums";
 import { CoreError } from "./coreError";
 
-export abstract class Parameter<T> {
-    public abstract readonly type: string;
-    protected abstract readonly parser: (data: any) => T;
-
+export class Parameter<T> {
     public readonly optional: boolean;
 
     constructor(
         public readonly name: string,
         public readonly description: string,
-        public readonly def?: T
+        public readonly def?: T,
+        public readonly type = "any",
+        protected readonly parser: (data: any) => T = data => data
     ) {
         this.optional = undefined !== def;
     }
