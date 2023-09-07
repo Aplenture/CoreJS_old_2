@@ -7,7 +7,7 @@
 
 import { Parameter } from "../core/parameter";
 
-export class ArrayParameter<T> extends Parameter<T[]>{
+export class ArrayParameter<T> extends Parameter<T[]> {
     public readonly type = this.parameter.type + ' array';
 
     constructor(

@@ -7,7 +7,7 @@
 
 import { Parameter } from "../core/parameter";
 
-export class DictionaryParameter<T> extends Parameter<T>{
+export class DictionaryParameter<T> extends Parameter<T> {
     public readonly type = 'dictionary';
     public readonly parameters: Parameter<any>[];
 

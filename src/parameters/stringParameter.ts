@@ -8,7 +8,7 @@
 import { Parameter } from "../core/parameter";
 import { parseToString } from "../utils";
 
-export class StringParameter extends Parameter<string>{
+export class StringParameter extends Parameter<string> {
     public readonly type = 'string';
     protected readonly parser = parseToString;
 }
