@@ -5,20 +5,25 @@
  * MIT License https://github.com/Aplenture/CoreJS/blob/main/LICENSE
  */
 
-import { StringParameter } from "../parameters";
+import { NumberParameter, StringParameter } from "../parameters";
 import { formatDuration, parseArgsFromString, parseArgsToString } from "../utils";
 import { Command, CommandAction } from "./command";
 import { Config } from "./config";
 import { Event } from "./event";
+import { Parameter } from "./parameter";
 import { ParameterList } from "./parameterList";
 import { Stopwatch } from "./stopwatch";
 
-const COMMAND_NAME_HELP = 'help';
+const COMMAND_HELP = 'help';
+const COMMAND_CONFIG_GET = 'config.get';
+const COMMAND_CONFIG_SET = 'config.set';
+const COMMAND_CONFIG_SERIALIZE = 'config.serialize';
 
 interface Options {
     readonly config?: Config;
     readonly description?: string;
     readonly fallback?: CommandAction<any>;
+    readonly addConfigCommands?: boolean;
 }
 
 interface ToStringOptions {
@@ -41,17 +46,51 @@ export class Commander {
         this.description = options.description || "";
         this._fallbackCommand = {
             name: '',
-            execute: options.fallback || (async () => `Unknown command. Type '${COMMAND_NAME_HELP}' to list all known commands.\n`)
+            execute: options.fallback || (async () => `Unknown command. Type '${COMMAND_HELP}' to list all known commands.\n`)
         };
 
         if (!options.fallback) {
             this.set({
-                name: COMMAND_NAME_HELP,
+                name: COMMAND_HELP,
                 execute: async args => this.toString(args.command && args.command.toString()),
                 description: 'Lists all commands or returns details of specific <command>.',
                 parameters: new ParameterList(
                     new StringParameter('command', 'Lists all commands with this prefix or returns details of specific command.', '')
                 )
+            });
+        }
+
+        if (options.addConfigCommands || undefined == options.addConfigCommands) {
+            this.set({
+                name: COMMAND_CONFIG_GET,
+                execute: async args => this.config.get(args.key),
+                description: 'returns a config parameter value',
+                parameters: new ParameterList(
+                    new StringParameter('key', 'config parameter name')
+                )
+            });
+
+            this.set({
+                name: COMMAND_CONFIG_SET,
+                description: 'sets a config parameter value',
+                parameters: new ParameterList(
+                    new StringParameter('key', 'Config parameter name.'),
+                    new Parameter('value', 'Config parameter value.')
+                ),
+                execute: async args => {
+                    this.config.set(args.key, args.value);
+
+                    return `${args.key} set to '${this.config.get(args.key)}'`;
+                }
+            });
+
+            this.set({
+                name: COMMAND_CONFIG_SERIALIZE,
+                description: "returns the serialized config",
+                parameters: new ParameterList(
+                    new NumberParameter('space', 'serialization option space', 4)
+                ),
+                execute: async args => JSON.stringify(this.config, null, args.space)
             });
         }
     }
@@ -77,7 +116,7 @@ export class Commander {
 
     public execute(command?: string, args?: any) {
         if (!command)
-            command = COMMAND_NAME_HELP;
+            command = COMMAND_HELP;
 
         const params = parseArgsToString(args);
         const commandLine = params
@@ -89,7 +128,7 @@ export class Commander {
 
     public executeLine(commandLine?: string) {
         if (!commandLine)
-            commandLine = COMMAND_NAME_HELP;
+            commandLine = COMMAND_HELP;
 
         const split = commandLine.split(' ');
         const command = split[0];
