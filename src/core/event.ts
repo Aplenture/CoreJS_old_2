@@ -60,10 +60,10 @@ export class Event<TSender, TArgs> {
             if (listener.off)
                 return;
 
-            if (undefined != listener.sender && sender != listener.sender)
+            if (undefined !== listener.sender && sender !== listener.sender)
                 return;
 
-            if (undefined != listener.args && args != listener.args)
+            if (undefined !== listener.args && args !== listener.args)
                 return;
 
             listener.handler.call(listener.listener, args, sender);
