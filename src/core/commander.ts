@@ -75,10 +75,7 @@ export class Commander {
             delete this._commands[key];
     }
 
-    public execute(command?: string, args?: any) {
-        if (!command)
-            command = COMMAND_HELP;
-
+    public execute(command = "", args?: any) {
         const params = parseArgsToString(args);
         const commandLine = params
             ? `${command} ${params}`
@@ -87,12 +84,12 @@ export class Commander {
         return this.executeCommand(commandLine, command, args);
     }
 
-    public executeLine(commandLine?: string) {
-        if (!commandLine)
-            commandLine = COMMAND_HELP;
-
+    public executeLine(commandLine = "") {
         const split = commandLine.split(' ');
-        const command = split[0];
+        const command = split[0] && 0 != split[0].indexOf('--')
+            ? split[0]
+            : '';
+
         const args = parseArgsFromString(commandLine.substring(command.length));
 
         return this.executeCommand(commandLine, command, args);
@@ -165,7 +162,7 @@ export class Commander {
             commands: Object.values(this.commands).map(command => ({
                 name: command.name,
                 description: command.description,
-                parameters: command.parameters.toJSON()
+                parameters: command.parameters && command.parameters.toJSON()
             }))
         };
     }
