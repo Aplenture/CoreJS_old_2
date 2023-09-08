@@ -63,6 +63,7 @@ export class Config extends ParameterList {
             return false;
 
         this._data[parameter.name] = parameter.def;
+        this.onChange.emit(this, parameter.name);
 
         return true;
     }
