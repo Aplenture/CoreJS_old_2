@@ -23,7 +23,7 @@ export class DictionaryParameter<T> extends Parameter<T> {
     }
 
     protected readonly parser = (data: any): T => {
-        if (undefined === data)
+        if (undefined == data)
             return undefined;
 
         if (0 == this.parameters.length)

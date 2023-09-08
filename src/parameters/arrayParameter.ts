@@ -20,7 +20,7 @@ export class ArrayParameter<T> extends Parameter<T[]> {
     }
 
     protected readonly parser = (data: any): T[] => {
-        if (undefined === data)
+        if (undefined == data)
             return undefined;
 
         return Array.isArray(data)
