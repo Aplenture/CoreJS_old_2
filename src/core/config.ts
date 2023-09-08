@@ -53,6 +53,8 @@ export class Config extends ParameterList {
             parameters.forEach(key => this.set(key, this.parameters[key] && this.parameters[key].def));
         else
             Object.values(this.parameters).forEach(param => this.set(param.name, param.def));
+
+        this.onChange.emit(this, null);
     }
 
     public add(parameter: Parameter<any>, onChange?: EventHandler<Config, string>, listener?: any): boolean {
@@ -111,6 +113,8 @@ export class Config extends ParameterList {
         for (const key in data)
             if (this.has(key))
                 this.set(key, data[key]);
+
+        this.onChange.emit(this, null);
     }
 
     public toString() {
