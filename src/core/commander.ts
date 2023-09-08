@@ -66,8 +66,8 @@ export class Commander {
         commands.forEach(command => this._commands[command.name.toLowerCase()] = command);
     }
 
-    public remove(command: string) {
-        delete this._commands[command.toLowerCase()];
+    public remove(...commands: readonly string[]) {
+        commands.forEach(command => delete this._commands[command.toLowerCase()]);
     }
 
     public clear() {
