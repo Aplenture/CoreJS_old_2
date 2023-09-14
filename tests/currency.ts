@@ -10,6 +10,7 @@ import { Currency } from "../src/utils"
 
 describe("Currency", () => {
     describe("toString()", () => {
+        it("0 => 0.00$", () => expect(Currency.toString(0, "$")).equals("0.00$"));
         it("1 => 0.01$", () => expect(Currency.toString(1, "$")).equals("0.01$"));
         it("99 => 0.99$", () => expect(Currency.toString(99, "$")).equals("0.99$"));
         it("101 => 1.01$", () => expect(Currency.toString(101, "$")).equals("1.01$"));
@@ -36,43 +37,51 @@ describe("Currency", () => {
 
     describe("percentage()", () => {
         describe("100", () => {
-            it("  1% => 1", () => expect(Currency.percentage(100, 1)).equals(1));
-            it("  3% => 3", () => expect(Currency.percentage(100, 3)).equals(3));
-            it(" 33% => 33", () => expect(Currency.percentage(100, 33)).equals(33));
-            it(" 66% => 66", () => expect(Currency.percentage(100, 66)).equals(66));
-            it(" 99% => 99", () => expect(Currency.percentage(100, 99)).equals(99));
-            it("100% => 100", () => expect(Currency.percentage(100, 100)).equals(100));
-            it("133% => 133", () => expect(Currency.percentage(100, 133)).equals(133));
+            it("-100% => -100", () => expect(Currency.percentage(100, -100)).equals(-100));
+            it("   0% =>    0", () => expect(Currency.percentage(100, 0)).equals(0));
+            it("   1% =>    1", () => expect(Currency.percentage(100, 1)).equals(1));
+            it("   3% =>    3", () => expect(Currency.percentage(100, 3)).equals(3));
+            it("  33% =>   33", () => expect(Currency.percentage(100, 33)).equals(33));
+            it("  66% =>   66", () => expect(Currency.percentage(100, 66)).equals(66));
+            it("  99% =>   99", () => expect(Currency.percentage(100, 99)).equals(99));
+            it(" 100% =>  100", () => expect(Currency.percentage(100, 100)).equals(100));
+            it(" 133% =>  133", () => expect(Currency.percentage(100, 133)).equals(133));
         });
 
         describe("101", () => {
-            it("  1% => 1", () => expect(Currency.percentage(101, 1)).equals(1));
-            it("  3% => 3", () => expect(Currency.percentage(101, 3)).equals(3));
-            it(" 33% => 33", () => expect(Currency.percentage(101, 33)).equals(33));
-            it(" 66% => 66", () => expect(Currency.percentage(101, 66)).equals(66));
-            it(" 99% => 99", () => expect(Currency.percentage(101, 99)).equals(99));
-            it("100% => 101", () => expect(Currency.percentage(101, 100)).equals(101));
-            it("133% => 134", () => expect(Currency.percentage(101, 133)).equals(134));
+            it("-100% => -101", () => expect(Currency.percentage(101, -100)).equals(-101));
+            it("   0% =>    0", () => expect(Currency.percentage(101, 0)).equals(0));
+            it("   1% =>    1", () => expect(Currency.percentage(101, 1)).equals(1));
+            it("   3% =>    3", () => expect(Currency.percentage(101, 3)).equals(3));
+            it("  33% =>   33", () => expect(Currency.percentage(101, 33)).equals(33));
+            it("  66% =>   66", () => expect(Currency.percentage(101, 66)).equals(66));
+            it("  99% =>   99", () => expect(Currency.percentage(101, 99)).equals(99));
+            it(" 100% =>  101", () => expect(Currency.percentage(101, 100)).equals(101));
+            it(" 133% =>  134", () => expect(Currency.percentage(101, 133)).equals(134));
         });
 
         describe("110", () => {
-            it("  1% => 1", () => expect(Currency.percentage(110, 1)).equals(1));
-            it("  3% => 3", () => expect(Currency.percentage(110, 3)).equals(3));
-            it(" 33% => 36", () => expect(Currency.percentage(110, 33)).equals(36));
-            it(" 66% => 72", () => expect(Currency.percentage(110, 66)).equals(72));
-            it(" 99% => 108", () => expect(Currency.percentage(110, 99)).equals(108));
-            it("100% => 110", () => expect(Currency.percentage(110, 100)).equals(110));
-            it("133% => 146", () => expect(Currency.percentage(110, 133)).equals(146));
+            it("-100% => -110", () => expect(Currency.percentage(110, -100)).equals(-110));
+            it("   0% =>    0", () => expect(Currency.percentage(110, 0)).equals(0));
+            it("   1% =>    1", () => expect(Currency.percentage(110, 1)).equals(1));
+            it("   3% =>    3", () => expect(Currency.percentage(110, 3)).equals(3));
+            it("  33% =>   36", () => expect(Currency.percentage(110, 33)).equals(36));
+            it("  66% =>   72", () => expect(Currency.percentage(110, 66)).equals(72));
+            it("  99% =>  108", () => expect(Currency.percentage(110, 99)).equals(108));
+            it(" 100% =>  110", () => expect(Currency.percentage(110, 100)).equals(110));
+            it(" 133% =>  146", () => expect(Currency.percentage(110, 133)).equals(146));
         });
 
         describe("111", () => {
-            it("  1% => 1", () => expect(Currency.percentage(111, 1)).equals(1));
-            it("  3% => 3", () => expect(Currency.percentage(111, 3)).equals(3));
-            it(" 33% => 36", () => expect(Currency.percentage(111, 33)).equals(36));
-            it(" 66% => 73", () => expect(Currency.percentage(111, 66)).equals(73));
-            it(" 99% => 109", () => expect(Currency.percentage(111, 99)).equals(109));
-            it("100% => 111", () => expect(Currency.percentage(111, 100)).equals(111));
-            it("133% => 147", () => expect(Currency.percentage(111, 133)).equals(147));
+            it("-100% => -111", () => expect(Currency.percentage(111, -100)).equals(-111));
+            it("   0% =>    0", () => expect(Currency.percentage(111, 0)).equals(0));
+            it("   1% =>    1", () => expect(Currency.percentage(111, 1)).equals(1));
+            it("   3% =>    3", () => expect(Currency.percentage(111, 3)).equals(3));
+            it("  33% =>   36", () => expect(Currency.percentage(111, 33)).equals(36));
+            it("  66% =>   73", () => expect(Currency.percentage(111, 66)).equals(73));
+            it("  99% =>  109", () => expect(Currency.percentage(111, 99)).equals(109));
+            it(" 100% =>  111", () => expect(Currency.percentage(111, 100)).equals(111));
+            it(" 133% =>  147", () => expect(Currency.percentage(111, 133)).equals(147));
         });
     });
 });
