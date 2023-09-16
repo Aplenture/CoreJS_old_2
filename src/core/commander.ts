@@ -9,7 +9,7 @@ import { StringParameter } from "../parameters";
 import { formatDuration, parseArgsFromString, parseArgsToString } from "../utils";
 import { Command, CommandAction } from "./command";
 import { Config } from "./config";
-import { Event } from "./event";
+import { GlobalEventManager } from "./eventManager";
 import { ParameterList } from "./parameterList";
 import { Stopwatch } from "./stopwatch";
 
@@ -27,16 +27,16 @@ interface ToStringOptions {
 }
 
 export class Commander {
-    public readonly onMessage = new Event<Commander, string>('Commander.onMessage');
-    public readonly onExecuted = new Event<any, string>('Commander.onExecuted');
-
     public readonly description: string;
     public readonly config: Config;
 
     private readonly _commands: NodeJS.Dict<Command<any>> = {};
     private readonly _fallbackCommand: Command<any>;
 
-    constructor(options: Options = {}) {
+    constructor(
+        options: Options = {},
+        public readonly eventManager = GlobalEventManager
+    ) {
         this.description = options.description || "";
         this.config = options.config || new Config();
         this._fallbackCommand = {
@@ -56,6 +56,7 @@ export class Commander {
         }
     }
 
+    public get name(): string { return this.constructor.name; }
     public get commands(): NodeJS.ReadOnlyDict<Command<any>> { return this._commands; }
 
     public has(command: string): boolean {
@@ -109,8 +110,7 @@ export class Commander {
 
         stopwatch.stop();
 
-        this.onMessage.emit(this, `executed '${commandLine}' in ${formatDuration(stopwatch.duration, { seconds: true, milliseconds: true })}`);
-        this.onExecuted.emit(result, commandLine);
+        this.eventManager.onMessage.emit(this, `executed '${commandLine}' in ${formatDuration(stopwatch.duration, { seconds: true, milliseconds: true })}`);
 
         return result;
     }

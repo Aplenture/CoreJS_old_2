@@ -10,6 +10,7 @@ export * from "./commander";
 export * from "./config";
 export * from "./coreError";
 export * from "./event";
+export * from "./eventManager";
 export * from "./localization";
 export * from "./parameter";
 export * from "./parameterList";

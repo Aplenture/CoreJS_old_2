@@ -5,6 +5,6 @@
  * MIT License https://github.com/Aplenture/CoreJS/blob/main/LICENSE
  */
 
-export * from "./clock";
-export * from "./eventEmitter";
-export * from "./stack";
+export interface IEventEmitter {
+    readonly name: string;
+}
