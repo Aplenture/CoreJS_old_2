@@ -76,12 +76,7 @@ export class Commander {
     }
 
     public execute(command = "", args?: any) {
-        const params = parseArgsToString(args);
-        const commandLine = params
-            ? `${command} ${params}`
-            : command;
-
-        return this.executeCommand(commandLine, command, args);
+        return this.executeCommand(`${command} ${parseArgsToString(args)}`, command, args);
     }
 
     public executeLine(commandLine = "") {
