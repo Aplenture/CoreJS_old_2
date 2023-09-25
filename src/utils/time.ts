@@ -21,6 +21,17 @@ export interface FormatDurationOptions {
     readonly seconds?: boolean;
 }
 
+export interface CalcDateOpitons {
+    readonly utc?: boolean;
+    readonly year?: number;
+    readonly month?: number;
+    readonly day?: number;
+    readonly hours?: number;
+    readonly minutes?: number;
+    readonly seconds?: number;
+    readonly milliseconds?: number;
+}
+
 export enum Milliseconds {
     Second = 1000,
     Minute = 60000,
@@ -35,6 +46,28 @@ export function trimTime(step: number, time = Date.now()): number {
     return step
         ? time - (time % step)
         : time;
+}
+
+export function calcDate(date = new Date(), options: CalcDateOpitons = {}) {
+    if (options.utc) return new Date(Date.UTC(
+        undefined != options.year ? options.year : date.getUTCFullYear(),
+        undefined != options.month ? options.month - 1 : date.getUTCMonth(),
+        undefined != options.day ? options.day : date.getUTCDate(),
+        undefined != options.hours ? options.hours : date.getUTCHours(),
+        undefined != options.minutes ? options.minutes : date.getUTCMinutes(),
+        undefined != options.seconds ? options.seconds : date.getUTCSeconds(),
+        undefined != options.milliseconds ? options.milliseconds : date.getUTCMilliseconds()
+    ));
+
+    return new Date(
+        undefined != options.year ? options.year : date.getFullYear(),
+        undefined != options.month ? options.month - 1 : date.getMonth(),
+        undefined != options.day ? options.day : date.getDate(),
+        undefined != options.hours ? options.hours : date.getHours(),
+        undefined != options.minutes ? options.minutes : date.getMinutes(),
+        undefined != options.seconds ? options.seconds : date.getSeconds(),
+        undefined != options.milliseconds ? options.milliseconds : date.getMilliseconds()
+    );
 }
 
 export function formatDate(date = new Date(), options: FormatDateOptions = {}) {
