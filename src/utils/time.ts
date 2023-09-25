@@ -22,10 +22,6 @@ export interface FormatDurationOptions {
 }
 
 export interface CalcDateOpitons {
-    readonly utc?: boolean;
-    readonly year?: number;
-    readonly month?: number;
-    readonly day?: number;
     readonly hours?: number;
     readonly minutes?: number;
     readonly seconds?: number;
@@ -48,26 +44,14 @@ export function trimTime(step: number, time = Date.now()): number {
         : time;
 }
 
-export function calcDate(date = new Date(), options: CalcDateOpitons = {}) {
-    if (options.utc) return new Date(Date.UTC(
-        undefined != options.year ? options.year : date.getUTCFullYear(),
-        undefined != options.month ? options.month - 1 : date.getUTCMonth(),
-        undefined != options.day ? options.day : date.getUTCDate(),
-        undefined != options.hours ? options.hours : date.getUTCHours(),
-        undefined != options.minutes ? options.minutes : date.getUTCMinutes(),
-        undefined != options.seconds ? options.seconds : date.getUTCSeconds(),
-        undefined != options.milliseconds ? options.milliseconds : date.getUTCMilliseconds()
-    ));
-
-    return new Date(
-        undefined != options.year ? options.year : date.getFullYear(),
-        undefined != options.month ? options.month - 1 : date.getMonth(),
-        undefined != options.day ? options.day : date.getDate(),
-        undefined != options.hours ? options.hours : date.getHours(),
-        undefined != options.minutes ? options.minutes : date.getMinutes(),
-        undefined != options.seconds ? options.seconds : date.getSeconds(),
-        undefined != options.milliseconds ? options.milliseconds : date.getMilliseconds()
-    );
+export function calcUTCDate(
+    date = new Date(),
+    day = date.getUTCDate(),
+    month = date.getUTCMonth() + 1,
+    year = date.getUTCFullYear(),
+    options: CalcDateOpitons = {}
+) {
+    return new Date(Date.UTC(year, month - 1, day, options.hours || 0, options.minutes || 0, options.seconds || 0, options.milliseconds || 0));
 }
 
 export function formatDate(date = new Date(), options: FormatDateOptions = {}) {

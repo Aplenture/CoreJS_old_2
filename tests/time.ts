@@ -6,13 +6,15 @@
  */
 
 import { expect } from "chai";
-import { calcDate } from "../src/utils"
+import { Milliseconds, calcUTCDate, trimTime } from "../src/utils"
 
 describe("Time", () => {
     describe("calc date", () => {
         const date = new Date();
+        const today = new Date(trimTime(Milliseconds.Day, Number(date)));
 
-        it("now", () => expect(calcDate(date).toISOString()).equals(date.toISOString()));
-        it("2022-09-25 11:57:02 391", () => expect(calcDate(new Date(), { year: 2022, month: 9, day: 25, hours: 11, minutes: 57, seconds: 2, milliseconds: 391, utc: true }).toISOString()).equals("2022-09-25T11:57:02.391Z"));
+        it(today.toISOString(), () => expect(calcUTCDate(date).toISOString()).equals(today.toISOString()));
+        it("2022-09-25T00:00:00.000Z", () => expect(calcUTCDate(date, 25, 9, 2022).toISOString()).equals("2022-09-25T00:00:00.000Z"));
+        it("2022-09-25T11:57:02.391Z", () => expect(calcUTCDate(date, 25, 9, 2022, { hours: 11, minutes: 57, seconds: 2, milliseconds: 391 }).toISOString()).equals("2022-09-25T11:57:02.391Z"));
     });
 });
