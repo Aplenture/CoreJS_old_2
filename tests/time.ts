@@ -8,7 +8,7 @@
 import { expect } from "chai";
 import { calcDate } from "../src/utils"
 
-describe.only("Time", () => {
+describe("Time", () => {
     describe("calc date", () => {
         const date = new Date();
 
