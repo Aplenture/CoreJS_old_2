@@ -28,6 +28,13 @@ export interface CalcDateOpitons {
     readonly milliseconds?: number;
 }
 
+export interface AddDateOpitons extends CalcDateOpitons {
+    readonly date?: Date;
+    readonly years?: number;
+    readonly months?: number;
+    readonly days?: number;
+}
+
 export enum Milliseconds {
     Second = 1000,
     Minute = 60000,
@@ -51,7 +58,43 @@ export function calcUTCDate(
     year = date.getUTCFullYear(),
     options: CalcDateOpitons = {}
 ) {
-    return new Date(Date.UTC(year, month - 1, day, options.hours || 0, options.minutes || 0, options.seconds || 0, options.milliseconds || 0));
+    return new Date(Date.UTC(
+        year,
+        month - 1,
+        day,
+        options.hours || 0,
+        options.minutes || 0,
+        options.seconds || 0,
+        options.milliseconds || 0
+    ));
+}
+
+export function addUTCDate(options: AddDateOpitons = {}) {
+    const date = options.date || new Date();
+
+    return new Date(Date.UTC(
+        date.getUTCFullYear() + (options.years || 0),
+        date.getUTCMonth() + (options.months || 0),
+        date.getUTCDate() + (options.days || 0),
+        date.getUTCHours() + (options.hours || 0),
+        date.getUTCMinutes() + (options.minutes || 0),
+        date.getUTCSeconds() + (options.seconds || 0),
+        date.getUTCMilliseconds() + (options.milliseconds || 0)
+    ));
+}
+
+export function reduceUTCDate(options: AddDateOpitons = {}) {
+    const date = options.date || new Date();
+
+    return new Date(Date.UTC(
+        date.getUTCFullYear() - (options.years || 0),
+        date.getUTCMonth() - (options.months || 0),
+        date.getUTCDate() - (options.days || 0),
+        date.getUTCHours() - (options.hours || 0),
+        date.getUTCMinutes() - (options.minutes || 0),
+        date.getUTCSeconds() - (options.seconds || 0),
+        date.getUTCMilliseconds() - (options.milliseconds || 0)
+    ));
 }
 
 export function formatDate(date = new Date(), options: FormatDateOptions = {}) {
