@@ -6,18 +6,21 @@
  */
 
 import { expect } from "chai";
-import { Milliseconds, addUTCDate, calcUTCDate, reduceUTCDate, trimTime } from "../src/utils"
+import { Milliseconds, Month, WeekDay, addUTCDate, calcUTCDate, reduceUTCDate, trimTime } from "../src/utils"
 
 describe("Time", () => {
     const date = new Date();
     const today = new Date(trimTime(Milliseconds.Day, Number(date)));
-    const lastMillisecond = calcUTCDate(date, 31, 12, 2022, { hours: 23, minutes: 59, seconds: 59, milliseconds: 999 });
-    const firstMillisecond = calcUTCDate(date, 1, 1, 2023);
+    const lastMillisecond = calcUTCDate({ date, monthDay: 31, month: Month.December, year: 2022, hours: 23, minutes: 59, seconds: 59, milliseconds: 999 });
+    const firstMillisecond = calcUTCDate({ date, monthDay: 1, month: Month.January, year: 2023 });
 
     describe("calc date", () => {
-        it(today.toISOString(), () => expect(calcUTCDate(date).toISOString()).equals(today.toISOString()));
-        it("2022-09-25T00:00:00.000Z", () => expect(calcUTCDate(date, 25, 9, 2022).toISOString()).equals("2022-09-25T00:00:00.000Z"));
-        it("2022-09-25T11:57:02.391Z", () => expect(calcUTCDate(date, 25, 9, 2022, { hours: 11, minutes: 57, seconds: 2, milliseconds: 391 }).toISOString()).equals("2022-09-25T11:57:02.391Z"));
+        it(today.toISOString(), () => expect(calcUTCDate({ date }).toISOString()).equals(today.toISOString()));
+        it("2023-09-25T00:00:00.000Z", () => expect(calcUTCDate({ date, monthDay: 25, month: Month.September, year: 2023 }).toISOString()).equals("2023-09-25T00:00:00.000Z"));
+        it("2023-09-25T11:57:02.391Z", () => expect(calcUTCDate({ date, monthDay: 25, month: Month.September, year: 2023, hours: 11, minutes: 57, seconds: 2, milliseconds: 391 }).toISOString()).equals("2023-09-25T11:57:02.391Z"));
+        it("Monday", () => expect(calcUTCDate({ date, monthDay: 26, month: Month.September, year: 2023, weekDay: WeekDay.Monday }).toISOString()).equals("2023-09-25T00:00:00.000Z"));
+        it("Tuesday", () => expect(calcUTCDate({ date, monthDay: 26, month: Month.September, year: 2023, weekDay: WeekDay.Tuesday }).toISOString()).equals("2023-09-26T00:00:00.000Z"));
+        it("Wednesday", () => expect(calcUTCDate({ date, monthDay: 26, month: Month.September, year: 2023, weekDay: WeekDay.Wednesday }).toISOString()).equals("2023-09-20T00:00:00.000Z"));
     });
 
     describe("add date", () => {

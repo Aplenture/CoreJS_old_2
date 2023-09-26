@@ -22,17 +22,26 @@ export interface FormatDurationOptions {
 }
 
 export interface CalcDateOpitons {
+    readonly date?: Date;
+    readonly monthDay?: number;
+    readonly month?: Month;
+    readonly year?: number;
+    readonly weekDay?: WeekDay;
     readonly hours?: number;
     readonly minutes?: number;
     readonly seconds?: number;
     readonly milliseconds?: number;
 }
 
-export interface AddDateOpitons extends CalcDateOpitons {
+export interface AddDateOpitons {
     readonly date?: Date;
     readonly years?: number;
     readonly months?: number;
     readonly days?: number;
+    readonly hours?: number;
+    readonly minutes?: number;
+    readonly seconds?: number;
+    readonly milliseconds?: number;
 }
 
 export enum Milliseconds {
@@ -45,28 +54,60 @@ export enum Milliseconds {
     Year = 31536000000
 }
 
+export enum WeekDay {
+    Sunday = 0,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday
+}
+
+export enum Month {
+    January = 0,
+    February,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December
+}
+
 export function trimTime(step: number, time = Date.now()): number {
     return step
         ? time - (time % step)
         : time;
 }
 
-export function calcUTCDate(
-    date = new Date(),
-    day = date.getUTCDate(),
-    month = date.getUTCMonth() + 1,
-    year = date.getUTCFullYear(),
-    options: CalcDateOpitons = {}
-) {
-    return new Date(Date.UTC(
-        year,
-        month - 1,
-        day,
+export function calcUTCDate(options: CalcDateOpitons = {}) {
+    const date = options.date || new Date();
+
+    const result = new Date(Date.UTC(
+        options.year ?? date.getUTCFullYear(),
+        options.month ?? date.getUTCMonth(),
+        options.monthDay ?? date.getUTCDate(),
         options.hours || 0,
         options.minutes || 0,
         options.seconds || 0,
         options.milliseconds || 0
     ));
+
+    if (undefined != options.weekDay) {
+        const weekDay: WeekDay = result.getDay();
+
+        if (weekDay < options.weekDay)
+            result.setDate(result.getDate() - weekDay + options.weekDay - 7);
+        else
+            result.setDate(result.getDate() - weekDay + options.weekDay);
+    }
+
+    return result;
 }
 
 export function addUTCDate(options: AddDateOpitons = {}) {
