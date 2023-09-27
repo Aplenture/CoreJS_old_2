@@ -111,7 +111,7 @@ export function calcUTCDate(options: CalcDateOpitons = {}) {
 }
 
 export function addUTCDate(options: AddDateOpitons = {}) {
-    const date = options.date || new Date();
+    const date = options.date || calcUTCDate();
 
     return new Date(Date.UTC(
         date.getUTCFullYear() + (options.years || 0),
@@ -125,7 +125,7 @@ export function addUTCDate(options: AddDateOpitons = {}) {
 }
 
 export function reduceUTCDate(options: AddDateOpitons = {}) {
-    const date = options.date || new Date();
+    const date = options.date || calcUTCDate();
 
     return new Date(Date.UTC(
         date.getUTCFullYear() - (options.years || 0),
