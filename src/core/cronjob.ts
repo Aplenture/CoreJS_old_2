@@ -55,7 +55,10 @@ export class Cronjob implements Task {
         if (time < this._nextUpdate)
             return Promise.resolve();
 
-        this.update(time);
+        while (time >= this._nextUpdate) {
+            this._nextData.date = addUTCDate(this._nextData);
+            this._nextUpdate = Number(this._nextData.date);
+        }
 
         return this._action(time);
     }
@@ -63,12 +66,5 @@ export class Cronjob implements Task {
     public reset(start: Date): void {
         this._nextData.date = start;
         this._nextUpdate = Number(start);
-    }
-
-    private update(time?: number) {
-        while (time >= this._nextUpdate) {
-            this._nextData.date = addUTCDate(this._nextData);
-            this._nextUpdate = Number(this._nextData.date);
-        }
     }
 }
