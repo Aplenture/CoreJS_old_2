@@ -71,7 +71,7 @@ export class Config extends ParameterList {
     }
 
     public write(data: NodeJS.Dict<any> = {}): NodeJS.Dict<any> {
-        Object.values(this.parameters).forEach(param => data[param.name] = param.parse(this._data[param.name], true));
+        Object.values(this.parameters).forEach(param => data[param.name] = param.parse(this._data[param.name] ?? null));
 
         return data;
     }
