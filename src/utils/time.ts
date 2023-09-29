@@ -79,6 +79,16 @@ export enum Month {
     December
 }
 
+export enum TimeFrame {
+    Second = 1,
+    Minute,
+    Hour,
+    Day,
+    Week,
+    Month,
+    Year
+}
+
 export function trimTime(step: number, time = Date.now()): number {
     return step
         ? time - (time % step)
