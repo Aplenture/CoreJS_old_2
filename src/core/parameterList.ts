@@ -29,8 +29,14 @@ export class ParameterList {
         return true;
     }
 
-    public parse(input: NodeJS.ReadOnlyDict<any> = {}, output: NodeJS.Dict<any> = {}, ignoreMissingParameter?: boolean): NodeJS.Dict<any> {
-        Object.values(this._parameters).forEach(param => output[param.name] = param.parse(input[param.name], ignoreMissingParameter));
+    public parse(input: NodeJS.ReadOnlyDict<any> = {}, output: NodeJS.Dict<any> = {}): NodeJS.Dict<any> {
+        Object.values(this._parameters).forEach(param => output[param.name] = param.parse(input[param.name]));
+
+        return output;
+    }
+
+    public filter(input: NodeJS.ReadOnlyDict<any> = {}, output: NodeJS.Dict<any> = {}): NodeJS.Dict<any> {
+        Object.values(this._parameters).forEach(param => input[param.name] !== undefined && (output[param.name] = input[param.name]));
 
         return output;
     }
