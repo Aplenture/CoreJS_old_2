@@ -152,6 +152,7 @@ export function parseArgsFromString(value: string): NodeJS.Dict<string | readonl
 export function parseArgsToString(args: NodeJS.ReadOnlyDict<any> = {}): string {
     return "" + Object.keys(args)
         .filter(key => undefined !== args[key])
+        .sort((a, b) => a.localeCompare(b))
         .map(key => `--${key} ${args[key]}`)
         .join(' ');
 }
