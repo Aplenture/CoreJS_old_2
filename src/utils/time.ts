@@ -109,6 +109,31 @@ export function calcUTCDate(options: CalcDateOpitons = {}) {
     ));
 
     if (undefined != options.weekDay) {
+        const weekDay: WeekDay = result.getUTCDay();
+
+        if (weekDay < options.weekDay)
+            result.setUTCDate(result.getUTCDate() - weekDay + options.weekDay - 7);
+        else
+            result.setUTCDate(result.getUTCDate() - weekDay + options.weekDay);
+    }
+
+    return result;
+}
+
+export function calcLocaleDate(options: CalcDateOpitons = {}) {
+    const date = options.date || new Date();
+
+    const result = new Date(
+        options.year ?? date.getFullYear(),
+        options.month ?? date.getMonth(),
+        options.monthDay ?? date.getDate(),
+        options.hours || 0,
+        options.minutes || 0,
+        options.seconds || 0,
+        options.milliseconds || 0
+    );
+
+    if (undefined != options.weekDay) {
         const weekDay: WeekDay = result.getDay();
 
         if (weekDay < options.weekDay)
@@ -134,6 +159,20 @@ export function addUTCDate(options: AddDateOpitons = {}) {
     ));
 }
 
+export function addLocaleDate(options: AddDateOpitons = {}) {
+    const date = options.date || calcLocaleDate();
+
+    return new Date(
+        date.getFullYear() + (options.years || 0),
+        date.getMonth() + (options.months || 0),
+        date.getDate() + (options.days || 0),
+        date.getHours() + (options.hours || 0),
+        date.getMinutes() + (options.minutes || 0),
+        date.getSeconds() + (options.seconds || 0),
+        date.getMilliseconds() + (options.milliseconds || 0)
+    );
+}
+
 export function reduceUTCDate(options: AddDateOpitons = {}) {
     const date = options.date || calcUTCDate();
 
@@ -146,6 +185,20 @@ export function reduceUTCDate(options: AddDateOpitons = {}) {
         date.getUTCSeconds() - (options.seconds || 0),
         date.getUTCMilliseconds() - (options.milliseconds || 0)
     ));
+}
+
+export function reduceLocaleDate(options: AddDateOpitons = {}) {
+    const date = options.date || calcLocaleDate();
+
+    return new Date(
+        date.getFullYear() - (options.years || 0),
+        date.getMonth() - (options.months || 0),
+        date.getDate() - (options.days || 0),
+        date.getHours() - (options.hours || 0),
+        date.getMinutes() - (options.minutes || 0),
+        date.getSeconds() - (options.seconds || 0),
+        date.getMilliseconds() - (options.milliseconds || 0)
+    );
 }
 
 export function formatDate(date = new Date(), options: FormatDateOptions = {}) {
