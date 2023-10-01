@@ -14,7 +14,7 @@ export class Updateloop {
     private readonly _stopwatch = new Stopwatch();
     private readonly _tasks: Task[] = [];
 
-    private _lastUpdate = 0;
+    private _nextUpdate: number;
     private _timeout: NodeJS.Timeout = null;
 
     constructor(
@@ -25,16 +25,16 @@ export class Updateloop {
 
     public get isRunning(): boolean { return this._stopwatch.isRunning; }
     public get duration(): number { return this._stopwatch.duration; }
-    public get lastUpdate(): number { return this._lastUpdate; }
+    public get nextUpdate(): number { return this._nextUpdate; }
 
-    public add(task: Task, autostart = false) {
+    public add(task: Task, autostart = false, time?: number) {
         this._tasks.push(task);
 
         if (autostart && !this.isRunning)
-            this.start();
+            this.start(time);
     }
 
-    public remove(task, autostop = false) {
+    public remove(task, autostop = false, time?: number) {
         const index = this._tasks.indexOf(task);
 
         if (-1 == index)
@@ -45,27 +45,29 @@ export class Updateloop {
         if (0 == this._tasks.length
             && autostop
             && this.isRunning)
-            this.stop();
+            this.stop(time);
     }
 
-    public start(time?: number) {
+    public start(time = Date.now()) {
         if (this.isRunning)
             throw new Error("Updateloop is currently running");
 
         this._stopwatch.start(time);
+        this._nextUpdate = 0;
+
+        this._tasks.forEach(task => task.reset(time));
 
         const loop = async () => {
             if (!this.isRunning) return;
 
-            const start = Date.now();
-            const nextUpdate = this._lastUpdate + this.interval;
+            time = this._stopwatch.time;
 
-            if (start < nextUpdate)
-                return this._timeout = setTimeout(loop, nextUpdate - start);
+            if (time < this._nextUpdate)
+                return this._timeout = setTimeout(loop, this._nextUpdate - time);
 
-            time = trimTime(this.interval, start);
+            time = trimTime(this.interval, time);
 
-            this._lastUpdate = time;
+            this._nextUpdate = time + this.interval;
 
             try {
                 await Promise.all(this._tasks.map(task => task.execute(time)));

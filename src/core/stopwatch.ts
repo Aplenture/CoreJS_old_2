@@ -16,23 +16,24 @@ export class Stopwatch implements Clock {
     private _running: boolean;
     private _start: number;
     private _stop: number;
-    private _realStart: number;
+    private _offset: number;
 
     constructor(options?: Options) {
         this.reset(options)
     }
 
     public get isRunning(): boolean { return this._running; }
-    public get time(): number { return Date.now() + this._start - this._realStart; }
+    public get time(): number { return Date.now() + this._offset; }
     public get duration(): number { return (this._stop || this.time) - this._start; }
+    public get offset(): number { return this._offset; }
 
-    public start(time?: number) {
+    public start(time = Date.now()) {
         if (this._running)
             throw new Error("stopwatch is currently running");
 
         this._running = true;
-        this._start = time || Date.now();
-        this._realStart = time ? Date.now() : this._start;
+        this._start = time;
+        this._offset = Date.now() - time;
         this._stop = 0;
     }
 

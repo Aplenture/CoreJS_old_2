@@ -7,4 +7,5 @@
 
 export interface Task {
     readonly execute: (time: number) => Promise<any>;
+    readonly reset: (time: number) => void;
 }
