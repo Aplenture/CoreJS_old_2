@@ -6,17 +6,15 @@
  */
 
 import { Task } from "../interfaces";
-import { addUTCDate } from "../utils";
+import { AddDateOpitons, addLocaleDate, calcLocaleDate, reduceLocaleDate } from "../utils";
 
 interface Interval {
     readonly years?: number;
     readonly months?: number;
     readonly days?: number;
-    readonly hours?: number;
-    readonly minutes?: number;
 }
 
-interface NextData extends Interval {
+interface NextData extends AddDateOpitons {
     date: Date;
 }
 
@@ -26,26 +24,21 @@ export class Cronjob implements Task {
 
     constructor(
         private readonly _action: (time: number) => Promise<any>,
-        start: Date,
-        interval: Interval = {}
+        interval: Interval,
+        start = addLocaleDate(interval)
     ) {
         if (!interval.years
             && !interval.months
-            && !interval.days
-            && !interval.hours
-            && !interval.minutes)
+            && !interval.days)
             throw new Error("the interval of a cronjob needs to be at least 1 minute");
 
+        this._nextUpdate = Number(start);
         this._nextData = {
             date: start,
             years: interval.years,
             months: interval.months,
-            days: interval.days,
-            hours: interval.hours,
-            minutes: interval.minutes
+            days: interval.days
         };
-
-        this._nextUpdate = Number(start);
     }
 
     public get nextUpdate(): number { return this._nextUpdate; }
@@ -55,16 +48,22 @@ export class Cronjob implements Task {
         if (time < this._nextUpdate)
             return Promise.resolve();
 
-        while (time >= this._nextUpdate) {
-            this._nextData.date = addUTCDate(this._nextData);
-            this._nextUpdate = Number(this._nextData.date);
-        }
+        let lastUpdate: number;
 
-        return this._action(time);
+        do {
+            lastUpdate = this._nextUpdate;
+
+            this._nextData.date = addLocaleDate(this._nextData);
+            this._nextUpdate = Number(this._nextData.date);
+        } while (time >= this._nextUpdate);
+
+        return this._action(lastUpdate);
     }
 
-    public reset(start: Date): void {
-        this._nextData.date = start;
-        this._nextUpdate = Number(start);
+    public reset(time: number): void {
+        while (time < this._nextUpdate) {
+            this._nextData.date = reduceLocaleDate(this._nextData);
+            this._nextUpdate = Number(this._nextData.date);
+        }
     }
 }
