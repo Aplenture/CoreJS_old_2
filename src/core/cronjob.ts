@@ -7,6 +7,7 @@
 
 import { Task } from "../interfaces";
 import { AddDateOpitons, addLocaleDate, calcLocaleDate, reduceLocaleDate } from "../utils";
+import { Event } from "./event";
 
 interface Interval {
     readonly years?: number;
@@ -19,6 +20,8 @@ interface NextData extends AddDateOpitons {
 }
 
 export class Cronjob implements Task {
+    public readonly onExecute = new Event<Cronjob, number>("Cronjob.onExecute");
+
     private _nextData: NextData;
     private _nextUpdate: number;
 
@@ -56,6 +59,8 @@ export class Cronjob implements Task {
             this._nextData.date = addLocaleDate(this._nextData);
             this._nextUpdate = Number(this._nextData.date);
         } while (time >= this._nextUpdate);
+
+        this.onExecute.emit(this, this._nextUpdate);
 
         return this._action(lastUpdate);
     }
