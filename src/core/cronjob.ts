@@ -24,6 +24,7 @@ export class Cronjob implements Task {
 
     private _nextData: NextData;
     private _nextUpdate: number;
+    private _start: number;
 
     constructor(
         private readonly _action: (time: number) => Promise<any>,
@@ -35,6 +36,7 @@ export class Cronjob implements Task {
             && !interval.days)
             throw new Error("the interval of a cronjob needs to be at least 1 minute");
 
+        this._start = Number(start);
         this._nextUpdate = Number(start);
         this._nextData = {
             date: start,
@@ -66,6 +68,8 @@ export class Cronjob implements Task {
     }
 
     public reset(time: number): void {
+        time = Math.max(time, this._start);
+
         while (time < this._nextUpdate) {
             this._nextData.date = reduceLocaleDate(this._nextData);
             this._nextUpdate = Number(this._nextData.date);
