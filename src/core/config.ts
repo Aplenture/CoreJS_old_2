@@ -61,6 +61,12 @@ export class Config extends ParameterList {
         if (!super.add(parameter))
             return false;
 
+        if (undefined === parameter.def)
+            return true;
+
+        if (undefined !== this._data[parameter.name])
+            return true;
+
         this._data[parameter.name] = parameter.def;
         this.onChange.emit(this, parameter.name);
 
