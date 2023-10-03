@@ -25,9 +25,6 @@ export class Config extends ParameterList {
     protected get data(): NodeJS.ReadOnlyDict<any> { return this._data; };
 
     public get<T>(key: string): T {
-        if (!this.has(key))
-            throw new Error(`unknown parameter '${key}'`);
-
         return this._data[key];
     }
 
