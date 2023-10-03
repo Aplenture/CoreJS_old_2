@@ -107,9 +107,10 @@ export class Config extends ParameterList {
         if (typeof data == 'string')
             return this.deserialize(JSON.parse(data));
 
-        for (const key in data)
-            if (this.has(key))
-                this.set(key, data[key]);
+        for (const key in data) {
+            this._data[key] = data[key];
+            this.onChange.emit(this, key);
+        }
 
         this.onChange.emit(this, null);
     }
