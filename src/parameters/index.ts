@@ -10,3 +10,4 @@ export * from "./boolParameter";
 export * from "./dictionaryParameter";
 export * from "./numberParameter";
 export * from "./stringParameter";
+export * from "./timesParameter";
