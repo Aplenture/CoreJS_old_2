@@ -6,7 +6,7 @@
  */
 
 import { Task } from "../interfaces";
-import { AddDateOpitons, addLocaleDate, calcLocaleDate, reduceLocaleDate } from "../utils";
+import { AddDateOpitons, addDate, reduceDate } from "../utils";
 import { Event } from "./event";
 
 interface Interval {
@@ -29,7 +29,7 @@ export class Cronjob implements Task {
     constructor(
         private readonly _action: (time: number) => Promise<any>,
         interval: Interval,
-        start = addLocaleDate(interval)
+        start = addDate(interval)
     ) {
         if (!interval.years
             && !interval.months
@@ -58,7 +58,7 @@ export class Cronjob implements Task {
         do {
             lastUpdate = this._nextUpdate;
 
-            this._nextData.date = addLocaleDate(this._nextData);
+            this._nextData.date = addDate(this._nextData);
             this._nextUpdate = Number(this._nextData.date);
         } while (time >= this._nextUpdate);
 
@@ -71,7 +71,7 @@ export class Cronjob implements Task {
         time = Math.max(time, this._start);
 
         while (time < this._nextUpdate) {
-            this._nextData.date = reduceLocaleDate(this._nextData);
+            this._nextData.date = reduceDate(this._nextData);
             this._nextUpdate = Number(this._nextData.date);
         }
     }

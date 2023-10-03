@@ -23,6 +23,7 @@ export interface FormatDurationOptions {
 
 export interface CalcDateOpitons {
     readonly date?: Date;
+    readonly utc?: boolean;
     readonly monthDay?: number;
     readonly month?: Month;
     readonly year?: number;
@@ -35,6 +36,7 @@ export interface CalcDateOpitons {
 
 export interface AddDateOpitons {
     readonly date?: Date;
+    readonly utc?: boolean;
     readonly years?: number;
     readonly months?: number;
     readonly days?: number;
@@ -95,33 +97,31 @@ export function trimTime(step: number, time = Date.now()): number {
         : time;
 }
 
-export function calcUTCDate(options: CalcDateOpitons = {}) {
+export function calcDate(options: CalcDateOpitons = {}) {
     const date = options.date || new Date();
 
-    const result = new Date(Date.UTC(
-        options.year ?? date.getUTCFullYear(),
-        options.month ?? date.getUTCMonth(),
-        options.monthDay ?? date.getUTCDate(),
-        options.hours || 0,
-        options.minutes || 0,
-        options.seconds || 0,
-        options.milliseconds || 0
-    ));
+    if (options.utc) {
+        const result = new Date(Date.UTC(
+            options.year ?? date.getUTCFullYear(),
+            options.month ?? date.getUTCMonth(),
+            options.monthDay ?? date.getUTCDate(),
+            options.hours || 0,
+            options.minutes || 0,
+            options.seconds || 0,
+            options.milliseconds || 0
+        ));
 
-    if (undefined != options.weekDay) {
-        const weekDay: WeekDay = result.getUTCDay();
+        if (undefined != options.weekDay) {
+            const weekDay: WeekDay = result.getUTCDay();
 
-        if (weekDay < options.weekDay)
-            result.setUTCDate(result.getUTCDate() - weekDay + options.weekDay - 7);
-        else
-            result.setUTCDate(result.getUTCDate() - weekDay + options.weekDay);
+            if (weekDay < options.weekDay)
+                result.setUTCDate(result.getUTCDate() - weekDay + options.weekDay - 7);
+            else
+                result.setUTCDate(result.getUTCDate() - weekDay + options.weekDay);
+        }
+
+        return result;
     }
-
-    return result;
-}
-
-export function calcLocaleDate(options: CalcDateOpitons = {}) {
-    const date = options.date || new Date();
 
     const result = new Date(
         options.year ?? date.getFullYear(),
@@ -145,10 +145,10 @@ export function calcLocaleDate(options: CalcDateOpitons = {}) {
     return result;
 }
 
-export function addUTCDate(options: AddDateOpitons = {}) {
-    const date = options.date || calcUTCDate();
+export function addDate(options: AddDateOpitons = {}) {
+    const date = options.date || calcDate({ utc: options.utc });
 
-    return new Date(Date.UTC(
+    if (options.utc) return new Date(Date.UTC(
         date.getUTCFullYear() + (options.years || 0),
         date.getUTCMonth() + (options.months || 0),
         date.getUTCDate() + (options.days || 0),
@@ -157,10 +157,6 @@ export function addUTCDate(options: AddDateOpitons = {}) {
         date.getUTCSeconds() + (options.seconds || 0),
         date.getUTCMilliseconds() + (options.milliseconds || 0)
     ));
-}
-
-export function addLocaleDate(options: AddDateOpitons = {}) {
-    const date = options.date || calcLocaleDate();
 
     return new Date(
         date.getFullYear() + (options.years || 0),
@@ -173,10 +169,10 @@ export function addLocaleDate(options: AddDateOpitons = {}) {
     );
 }
 
-export function reduceUTCDate(options: AddDateOpitons = {}) {
-    const date = options.date || calcUTCDate();
+export function reduceDate(options: AddDateOpitons = {}) {
+    const date = options.date || calcDate({ utc: options.utc });
 
-    return new Date(Date.UTC(
+    if (options.utc) return new Date(Date.UTC(
         date.getUTCFullYear() - (options.years || 0),
         date.getUTCMonth() - (options.months || 0),
         date.getUTCDate() - (options.days || 0),
@@ -185,10 +181,6 @@ export function reduceUTCDate(options: AddDateOpitons = {}) {
         date.getUTCSeconds() - (options.seconds || 0),
         date.getUTCMilliseconds() - (options.milliseconds || 0)
     ));
-}
-
-export function reduceLocaleDate(options: AddDateOpitons = {}) {
-    const date = options.date || calcLocaleDate();
 
     return new Date(
         date.getFullYear() - (options.years || 0),
