@@ -17,5 +17,6 @@ export * from "./parameter";
 export * from "./parameterList";
 export * from "./response";
 export * from "./stopwatch";
+export * from "./timeout";
 export * from "./timer";
 export * from "./updateLoop";
