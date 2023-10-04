@@ -52,9 +52,9 @@ export class Updateloop {
         if (this.isRunning)
             throw new Error("Updateloop is currently running");
 
-        this._stopwatch.start(time);
-        this._nextUpdate = 0;
+        this._nextUpdate = trimTime(this.interval, time + this.interval);
 
+        this._stopwatch.start(time);
         this._tasks.forEach(task => task.reset(time));
 
         const loop = async () => {
