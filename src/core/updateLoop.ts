@@ -7,7 +7,7 @@
 
 import { Task } from "../interfaces";
 import { Milliseconds, trimTime } from "../utils/time";
-import { GlobalEventManager } from "./eventManager";
+import { IEventManager } from "./eventManager";
 import { Stopwatch } from "./stopwatch";
 
 export class Updateloop {
@@ -19,8 +19,8 @@ export class Updateloop {
 
     constructor(
         public readonly name: string,
+        public readonly eventManger: IEventManager,
         public readonly interval = Milliseconds.Second,
-        public readonly eventManger = GlobalEventManager
     ) { }
 
     public get isRunning(): boolean { return this._stopwatch.isRunning; }
@@ -95,5 +95,3 @@ export class Updateloop {
         this._stopwatch.stop(time);
     }
 }
-
-export const GlobalUpdateLoop = new Updateloop("global");
