@@ -6,8 +6,9 @@
  */
 
 export * as BigMath from "./bigMath";
-export * as Serialization from "./serialization";
 export * from "./currency";
+export * as Math from "./math";
+export * as Serialization from "./serialization";
 export * from "./sleep";
 export * from "./text";
 export * from "./time";
