@@ -7,5 +7,6 @@
 
 export * from "./clock";
 export * from "./eventEmitter";
+export * from "./file";
 export * from "./stack";
 export * from "./task";
