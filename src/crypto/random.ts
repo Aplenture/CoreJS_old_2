@@ -49,15 +49,17 @@ export const randomHex = (function () {
  * SplitMix32 seeded pseudo random function
  * https://github.com/bryc/code/blob/master/jshash/PRNGs.md#splitmix32
  */
-export function randomSeeded(seed: number): number {
-    seed |= 0; seed = seed + 0x9e3779b9 | 0;
-    var t = seed ^ seed >>> 15; t = Math.imul(t, 0x85ebca6b);
+export function seededRNG(seed: number) {
+    return function () {
+        seed |= 0; seed = seed + 0x9e3779b9 | 0;
+        var t = seed ^ seed >>> 15; t = Math.imul(t, 0x85ebca6b);
         t = t ^ t >>> 13; t = Math.imul(t, 0xc2b2ae35);
-    return ((t = t ^ t >>> 16) >>> 0) / 4294967296;
+        return ((t = t ^ t >>> 16) >>> 0) / 4294967296;
+    }
 }
 
-export function randomRanged(max: number, min = 0, seed = Number(random(4))): number {
-    return min + Math.floor(randomSeeded(seed) * (max - min + 1));
+export function randomRanged(max: number, min = 0, rdm = Number(random(4))): number {
+    return min + Math.floor(rdm * (max - min + 1));
 }
 
 /**
