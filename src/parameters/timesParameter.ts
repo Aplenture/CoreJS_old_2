@@ -8,7 +8,7 @@
 import { Parameter } from "../core/parameter";
 import { parseToTime } from "../utils";
 
-export class TimeParameter extends Parameter<number> {
+export class TimeParameter extends Parameter<number | Date> {
     public readonly type = 'number';
     protected readonly parser = parseToTime;
 } 
