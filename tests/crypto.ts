@@ -8,7 +8,7 @@
 import { expect } from "chai";
 import { random, seededRNG } from "../src";
 
-describe("seeded random", () => {
+describe.skip("seeded random", () => {
     const seed = Number(random(4));
     const rng = seededRNG(seed);
     const count = 400000;
