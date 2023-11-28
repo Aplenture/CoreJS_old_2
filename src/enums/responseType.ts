@@ -7,6 +7,7 @@
 
 export enum ResponseType {
     Text = 'text/plain',
+    CSV = 'text/csv',
     CSS = 'text/css',
     JSON = 'application/json',
     HTML = 'text/html',

@@ -5,6 +5,7 @@ const DEFAULT_SEPERATOR = ';';
 const DEFAULT_LINEBREAK = '\n';
 
 interface Options {
+    readonly extension?: string;
     readonly seperator?: string;
     readonly linebreak?: string;
 }
@@ -14,18 +15,18 @@ interface Serializable {
 }
 
 export class CSVParser implements File {
-    public readonly name: string;
-
-    public readonly type = ResponseType.Text;
+    public readonly extension: string;
+    public readonly type = ResponseType.CSV;
     public readonly charset = 'utf-8';
+    public readonly bom = '%EF%BB%BF';
 
     public seperator: string;
     public linebreak: string;
 
     private rows: Array<ReadonlyArray<Serializable>>;
 
-    constructor(name: string, options: Options = {}) {
-        this.name = name + '.csv';
+    constructor(public readonly name: string, options: Options = {}) {
+        this.extension = options.extension ?? "csv";
         this.seperator = options.seperator ?? DEFAULT_SEPERATOR;
         this.linebreak = options.linebreak ?? DEFAULT_LINEBREAK;
 
@@ -50,7 +51,7 @@ export class CSVParser implements File {
 
     public print(): string {
         return this.rows
-            .map(row => row.join(this.seperator))
+            .map(row => encodeURI(row.join(this.seperator)))
             .join(this.linebreak);
     }
 
