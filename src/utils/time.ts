@@ -193,51 +193,35 @@ export function reduceDate(options: AddDateOpitons = {}) {
     );
 }
 
-export function formatDate(date = new Date(), options: FormatDateOptions = {}) {
-    const seperator = options.seperator !== undefined ? options.seperator : "-";
+export function formatDate(format: string, date = new Date()) {
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString();
+    const day = date.getDate().toString();
 
-    let month = '' + ((options.utc ? date.getUTCMonth() : date.getMonth()) + 1),
-        day = '' + (options.utc ? date.getUTCDate() : date.getDate()),
-        year = options.utc ? date.getUTCFullYear() : date.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-
-    if (day.length < 2)
-        day = '0' + day;
-
-    return `${year}${seperator}${month}${seperator}${day}`;
+    return format
+        .replace("YYYY", year)
+        .replace("YY", year.substring(2))
+        .replace("MM", month.length == 2 ? month : '0' + month)
+        .replace("M", month)
+        .replace("DD", day.length == 2 ? day : '0' + day)
+        .replace("D", day);
 }
 
-export function formatTime(date = new Date(), options: FormatDateOptions = {}) {
-    const seperator = options.seperator !== undefined ? options.seperator : ":";
+export function formatTime(format: string, date = new Date()) {
+    const hours = date.getHours().toString();
+    const minutes = date.getMinutes().toString();
+    const seconds = date.getSeconds().toString();
+    const milliseconds = date.getMilliseconds().toString();
 
-    let seconds = '' + (options.utc ? date.getUTCSeconds() : date.getSeconds()),
-        minutes = '' + (options.utc ? date.getUTCMinutes() : date.getMinutes()),
-        hours = '' + (options.utc ? date.getUTCHours() : date.getHours());
-
-    if (seconds.length < 2)
-        seconds = '0' + seconds;
-
-    if (minutes.length < 2)
-        minutes = '0' + minutes;
-
-    if (hours.length < 2)
-        hours = '0' + hours;
-
-    let result = `${hours}${seperator}${minutes}`;
-
-    if (options.seconds)
-        result += seperator + seconds;
-
-    return result;
-}
-
-export function formatDateTime(date = new Date(), options: FormatDateTimeOptions = {}) {
-    const d = formatDate(date, Object.assign({}, options, { seperator: options.dateSeperator || options.seperator }));
-    const t = formatTime(date, Object.assign({}, options, { seperator: options.timeSeperator || options.seperator }));
-
-    return `${d}${options.seperator !== undefined ? options.seperator : " "}${t}`;
+    return formatDate(format, date)
+        .replace("hh", hours.length == 2 ? hours : '0' + hours)
+        .replace("h", hours)
+        .replace("mm", minutes.length == 2 ? minutes : '0' + minutes)
+        .replace("m", minutes)
+        .replace("ss", seconds.length == 2 ? seconds : '0' + seconds)
+        .replace("s", seconds)
+        .replace("mss", '0'.repeat(4 - milliseconds.length) + milliseconds)
+        .replace("ms", milliseconds);
 }
 
 export function formatDuration(milliseconds: number, options: FormatDurationOptions = {}): string {
