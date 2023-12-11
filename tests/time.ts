@@ -6,7 +6,7 @@
  */
 
 import { expect } from "chai";
-import { Milliseconds, Month, WeekDay, trimTime, calcDate, addDate, reduceDate } from "../src/utils"
+import { Milliseconds, Month, WeekDay, trimTime, calcDate, addDate, reduceDate, formatDate, formatTime } from "../src/utils"
 
 describe("Time", () => {
     const date = new Date();
@@ -41,5 +41,13 @@ describe("Time", () => {
         it("a day", () => expect(reduceDate({ utc: true, date: firstMillisecond, days: 1 }).toISOString()).equals("2022-12-31T00:00:00.000Z"));
         it("a month", () => expect(reduceDate({ utc: true, date: firstMillisecond, months: 1 }).toISOString()).equals("2022-12-01T00:00:00.000Z"));
         it("a year", () => expect(reduceDate({ utc: true, date: firstMillisecond, years: 1 }).toISOString()).equals("2022-01-01T00:00:00.000Z"));
+    });
+
+    describe("format date", () => {
+        it("2023-03-01", () => expect(formatDate(undefined, new Date("2023-03-01"))).equals("2023-03-01"));
+    });
+
+    describe("format time", () => {
+        it("2023-03-01 13:00:00.001", () => expect(formatTime(undefined, new Date("2023-03-01 13:00:00.001"))).equals("2023-03-01 13:00:00.001"));
     });
 });

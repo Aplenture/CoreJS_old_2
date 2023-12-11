@@ -193,7 +193,7 @@ export function reduceDate(options: AddDateOpitons = {}) {
     );
 }
 
-export function formatDate(format: string, date = new Date()) {
+export function formatDate(format = "YYYY-MM-DD", date = new Date()) {
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString();
     const day = date.getDate().toString();
@@ -202,26 +202,26 @@ export function formatDate(format: string, date = new Date()) {
         .replace("YYYY", year)
         .replace("YY", year.substring(2))
         .replace("MM", month.length == 2 ? month : '0' + month)
-        .replace("M", month)
         .replace("DD", day.length == 2 ? day : '0' + day)
+        .replace("M", month)
         .replace("D", day);
 }
 
-export function formatTime(format: string, date = new Date()) {
+export function formatTime(format = "YYYY-MM-DD hh:mm:ss.mss", date = new Date()) {
     const hours = date.getHours().toString();
     const minutes = date.getMinutes().toString();
     const seconds = date.getSeconds().toString();
     const milliseconds = date.getMilliseconds().toString();
 
     return formatDate(format, date)
+        .replace("mss", '0'.repeat(3 - milliseconds.length) + milliseconds)
         .replace("hh", hours.length == 2 ? hours : '0' + hours)
-        .replace("h", hours)
         .replace("mm", minutes.length == 2 ? minutes : '0' + minutes)
-        .replace("m", minutes)
         .replace("ss", seconds.length == 2 ? seconds : '0' + seconds)
-        .replace("s", seconds)
-        .replace("mss", '0'.repeat(4 - milliseconds.length) + milliseconds)
-        .replace("ms", milliseconds);
+        .replace("ms", milliseconds)
+        .replace("h", hours)
+        .replace("m", minutes)
+        .replace("s", seconds);
 }
 
 export function formatDuration(milliseconds: number, options: FormatDurationOptions = {}): string {
