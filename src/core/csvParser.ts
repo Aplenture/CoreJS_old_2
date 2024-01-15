@@ -2,7 +2,7 @@ import { ResponseType } from "../enums";
 import { File } from "../interfaces";
 
 const DEFAULT_SEPERATOR = ';';
-const DEFAULT_LINEBREAK = '\n';
+const DEFAULT_LINEBREAK = '\r\n';
 
 interface Options {
     readonly extension?: string;
