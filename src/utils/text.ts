@@ -15,6 +15,7 @@ const STRING_Y = "y";
 const STRING_YES = "yes";
 
 interface CurrencyOptions {
+    readonly style?: string;
     readonly locales?: string;
     readonly currency?: string;
     readonly digits?: number;
@@ -162,10 +163,12 @@ export function parseToNumeric(value: string): string {
 }
 
 export function formatCurrency(value = 0, options: CurrencyOptions = {}): string {
-    return (value / 100).toLocaleString(options.locales, {
-        style: 'currency',
-        currency: options.currency || 'EUR',
-        minimumFractionDigits: undefined == options.digits ? 2 : options.digits
+    value /= 100;
+
+    return value.toLocaleString(options.locales, {
+        style: options.style === undefined ? 'currency' : options.style == undefined ? undefined : options.style,
+        currency: options.currency ?? 'EUR',
+        minimumFractionDigits: options.digits ?? 2
     });
 }
 
