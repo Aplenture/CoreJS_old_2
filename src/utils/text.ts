@@ -40,7 +40,7 @@ export function parseToString(value: any): string {
     if (undefined == value)
         return;
 
-    return value.toString();
+    return decodeString(value.toString());
 }
 
 export function parseToNumber(value: any): number {
