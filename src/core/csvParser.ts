@@ -51,7 +51,7 @@ export class CSVParser implements File {
 
     public print(): string {
         return this.rows
-            .map(row => encodeURI(row.join(this.seperator)))
+            .map(row => row.join(this.seperator))
             .join(this.linebreak);
     }
 
